@@ -9,11 +9,11 @@ servers:
     description: Main server
     
 paths:
-  /showtimes/{showtimeId}/seats:
+  /showtimes/{showtimeID}/seats:
     get:
       summary: Get all the seats for a showtime.
       parameters:
-        - name: showtimeId
+        - name: showtimeID
           in: path
           required: true
           schema:
@@ -28,18 +28,24 @@ paths:
                 items:
                   type: object
                   properties:
-                    seatId:
+                    seatID:
                       type: string
-                    available:
-                      type: boolean
+                    row:
+                      type: string
+                    number:
+                      type: integer
+                    seatType:
+                      type: string
+                    status:
+                      type: string
         "404":
           description: Showtime not found
  
-  /showtimes/{showtimeId}/holds:
+  /showtimes/{showtimeID}/hold:
     post:
       summary: Hold seats for a showtime while the customer pays.
       parameters:
-        - name: showtimeId
+        - name: showtimeID
           in: path
           required: true
           schema:
@@ -51,28 +57,41 @@ paths:
             schema:
               type: object
               properties:
-                seatIds:
-                  type: array
-                  items:
-                    type: string
+                seatID:
+                  type: string
+                ticketType:
+                  type: string
       responses:
         "201":
           description: Seats were held
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  holdID:
+                    type: string
+                  price:
+                    type: number
+                  subtotal:
+                    type: number
+                  expireTime:
+                    type: string
         "400":
           description: Bad request, no seats were picked
         "409":
           description: One of the seats is already taken
  
-  /showtimes/{showtimeId}/holds/{holdId}:
+  /showtimes/{showtimeID}/hold/{holdID}:
     delete:
       summary: Cancel a seat hold.
       parameters:
-        - name: showtimeId
+        - name: showtimeID
           in: path
           required: true
           schema:
             type: string
-        - name: holdId
+        - name: holdID
           in: path
           required: true
           schema:
